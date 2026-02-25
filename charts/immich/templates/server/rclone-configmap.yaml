@@ -9,7 +9,7 @@ data:
   rclone.conf: |
     [s3remote]
     type = s3
-    provider = Other
+    provider = {{ .Values.server.rclone.s3.provider | default "Other" }}
     env_auth = true
     endpoint = {{ .Values.server.rclone.s3.endpoint }}
     region = {{ .Values.server.rclone.s3.region | default "us-east-1" }}

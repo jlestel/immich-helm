@@ -154,6 +154,7 @@ Return contents of the rclone configmap for checksum calculation
 */}}
 {{- define "immich.rcloneConfig" }}
 {{- if (include "immich.rclone.enabled" .) }}
+provider: {{ .Values.server.rclone.s3.provider }}
 endpoint: {{ .Values.server.rclone.s3.endpoint }}
 region: {{ .Values.server.rclone.s3.region }}
 bucket: {{ .Values.server.rclone.s3.bucket }}
