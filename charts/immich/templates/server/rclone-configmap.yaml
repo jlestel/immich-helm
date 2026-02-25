@@ -9,11 +9,11 @@ data:
   rclone.conf: |
     [s3remote]
     type = s3
-    provider = {{ .Values.server.rclone.s3.provider | default "Other" }}
+    provider = {{ include "immich.rclone.s3.provider" . }}
     env_auth = true
     endpoint = {{ .Values.server.rclone.s3.endpoint }}
-    region = {{ .Values.server.rclone.s3.region | default "us-east-1" }}
-    {{- if .Values.server.rclone.s3.forcePathStyle }}
+    region = {{ include "immich.rclone.s3.region" . }}
+    {{- if eq (include "immich.rclone.s3.forcePathStyle" .) "true" }}
     force_path_style = true
     {{- end }}
 

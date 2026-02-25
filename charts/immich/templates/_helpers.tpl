@@ -150,16 +150,75 @@ true
 {{- end -}}
 
 {{/*
+Auto-detect the rclone S3 provider from the endpoint URL.
+Returns the provider name for rclone (e.g., "AWS", "GCS", "Minio").
+Falls back to "Other" if no known provider is detected.
+*/}}
+{{- define "immich.rclone.s3.provider" -}}
+{{- $endpoint := .Values.server.rclone.s3.endpoint -}}
+{{- if contains "amazonaws.com" $endpoint -}}
+AWS
+{{- else if contains "storage.googleapis.com" $endpoint -}}
+GCS
+{{- else if contains "digitaloceanspaces.com" $endpoint -}}
+DigitalOcean
+{{- else if contains "blob.core.windows.net" $endpoint -}}
+Azure
+{{- else if contains "cloud.ovh.net" $endpoint -}}
+OVH
+{{- else if contains "wasabisys.com" $endpoint -}}
+Wasabi
+{{- else if contains "backblazeb2.com" $endpoint -}}
+B2
+{{- else if contains "idrivee2" $endpoint -}}
+IDrive
+{{- else if contains "r2.cloudflarestorage.com" $endpoint -}}
+Cloudflare
+{{- else -}}
+Other
+{{- end -}}
+{{- end -}}
+
+{{/*
+Auto-detect whether force_path_style should be enabled.
+AWS and GCS use virtual-hosted style; most others use path style.
+*/}}
+{{- define "immich.rclone.s3.forcePathStyle" -}}
+{{- $provider := include "immich.rclone.s3.provider" . -}}
+{{- if or (eq $provider "AWS") (eq $provider "GCS") -}}
+false
+{{- else -}}
+true
+{{- end -}}
+{{- end -}}
+
+{{/*
+Auto-detect the default region based on provider.
+*/}}
+{{- define "immich.rclone.s3.region" -}}
+{{- if .Values.server.rclone.s3.region -}}
+{{- .Values.server.rclone.s3.region -}}
+{{- else -}}
+{{- $provider := include "immich.rclone.s3.provider" . -}}
+{{- if eq $provider "GCS" -}}
+auto
+{{- else -}}
+us-east-1
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return contents of the rclone configmap for checksum calculation
 */}}
 {{- define "immich.rcloneConfig" }}
 {{- if (include "immich.rclone.enabled" .) }}
-provider: {{ .Values.server.rclone.s3.provider }}
+provider: {{ include "immich.rclone.s3.provider" . }}
 endpoint: {{ .Values.server.rclone.s3.endpoint }}
-region: {{ .Values.server.rclone.s3.region }}
+region: {{ include "immich.rclone.s3.region" . }}
 bucket: {{ .Values.server.rclone.s3.bucket }}
 pathPrefix: {{ .Values.server.rclone.s3.pathPrefix }}
-forcePathStyle: {{ .Values.server.rclone.s3.forcePathStyle }}
+forcePathStyle: {{ include "immich.rclone.s3.forcePathStyle" . }}
 syncInterval: {{ .Values.server.rclone.syncInterval }}
 extraFlags: {{ .Values.server.rclone.extraFlags | join "," }}
 {{- end }}

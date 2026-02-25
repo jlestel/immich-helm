@@ -140,24 +140,26 @@ server:
     # S3 configuration
     # Works with any S3-compatible backend (AWS, MinIO, GCS interop, etc.)
     #
+    # The provider, region, and path style are auto-detected from the endpoint:
+    #   - amazonaws.com         → AWS (virtual-hosted style, region us-east-1)
+    #   - storage.googleapis.com → GCS (virtual-hosted style, region auto)
+    #   - digitaloceanspaces.com → DigitalOcean
+    #   - wasabisys.com          → Wasabi
+    #   - backblazeb2.com        → B2
+    #   - r2.cloudflarestorage.com → Cloudflare R2
+    #   - Other endpoints        → Generic S3 (path style, region us-east-1)
+    #
     # Example for GCS in interop mode:
     #   s3:
-    #     provider: "GCS"
     #     endpoint: "https://storage.googleapis.com"
     #     accessKey: "<GCS interop access key>"
     #     secretKey: "<GCS interop secret>"
     #     bucket: "my-immich-backup"
-    #     region: "auto"
-    #     forcePathStyle: false
     #
     # To generate GCS interop keys:
     #   Go to Cloud Console > Cloud Storage > Settings > Interoperability
     #   and create an HMAC key for your service account.
     s3:
-      # S3 provider for rclone (e.g., "Other", "GCS", "AWS", "Minio")
-      # Use "GCS" for Google Cloud Storage interop mode
-      # See https://rclone.org/s3/#s3-provider for all options
-      provider: "Other"
       # S3 endpoint URL (e.g., https://s3.amazonaws.com, https://minio.example.com,
       # or https://storage.googleapis.com for GCS interop)
       endpoint: ""
@@ -167,13 +169,11 @@ server:
       secretKey: ""
       # S3 bucket name
       bucket: ""
-      # S3 region (use "auto" for GCS, defaults to us-east-1)
-      region: "us-east-1"
+      # S3 region (leave empty for auto-detection based on provider)
+      region: ""
       # Path prefix within the bucket (optional)
       # e.g., "immich-backup" would sync to s3://bucket/immich-backup/
       pathPrefix: ""
-      # Force path style URLs (required for MinIO, set to false for GCS and AWS)
-      forcePathStyle: true
 
     # Additional rclone flags to pass to the sync command
     # e.g., ["--verbose", "--transfers=4", "--checkers=8"]
