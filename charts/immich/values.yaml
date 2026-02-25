@@ -122,6 +122,57 @@ server:
     # new volume, the PVC will attach to the existing one.
     volumeName: ""
 
+  # Rclone S3 sync sidecar configuration
+  # Continuously syncs /data to an S3-compatible storage backend
+  rclone:
+    # Enable the rclone sidecar container
+    enabled: false
+
+    image:
+      repository: rclone/rclone
+      pullPolicy: IfNotPresent
+      tag: "1.68"
+
+    # Sync interval in seconds (how often to run rclone sync)
+    # Default: 3600 (1 hour)
+    syncInterval: 3600
+
+    # S3 configuration
+    s3:
+      # S3 endpoint URL (e.g., https://s3.amazonaws.com or https://minio.example.com)
+      endpoint: ""
+      # S3 access key ID
+      accessKey: ""
+      # S3 secret access key
+      secretKey: ""
+      # S3 bucket name
+      bucket: ""
+      # S3 region (optional, defaults to us-east-1)
+      region: "us-east-1"
+      # Path prefix within the bucket (optional)
+      # e.g., "immich-backup" would sync to s3://bucket/immich-backup/
+      pathPrefix: ""
+      # Force path style URLs (required for MinIO and some S3-compatible providers)
+      forcePathStyle: true
+
+    # Additional rclone flags to pass to the sync command
+    # e.g., ["--verbose", "--transfers=4", "--checkers=8"]
+    extraFlags: []
+
+    # Resource limits and requests for the sidecar container
+    resources: {}
+      # limits:
+      #   cpu: 500m
+      #   memory: 256Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+
+    # Security context for the rclone container
+    securityContext: {}
+      # runAsUser: 1000
+      # runAsGroup: 1000
+
   # Any valid configuration for immich-server. For valid values see:
   # https://docs.immich.app/install/config-file
   # This is template-enabled so you can use Helm template functions. If you set

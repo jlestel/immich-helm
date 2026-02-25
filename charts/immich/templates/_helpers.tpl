@@ -138,3 +138,18 @@ DB_HOSTNAME: {{ printf "%s-%s" (include "immich.fullname" .) "database" | b64enc
   {{- end }}
 {{- end }}
 {{- end }}
+
+{{/*
+Return contents of the rclone configmap for checksum calculation
+*/}}
+{{- define "immich.rcloneConfig" }}
+{{- if .Values.server.rclone.enabled }}
+endpoint: {{ .Values.server.rclone.s3.endpoint }}
+region: {{ .Values.server.rclone.s3.region }}
+bucket: {{ .Values.server.rclone.s3.bucket }}
+pathPrefix: {{ .Values.server.rclone.s3.pathPrefix }}
+forcePathStyle: {{ .Values.server.rclone.s3.forcePathStyle }}
+syncInterval: {{ .Values.server.rclone.syncInterval }}
+extraFlags: {{ .Values.server.rclone.extraFlags | join "," }}
+{{- end }}
+{{- end }}

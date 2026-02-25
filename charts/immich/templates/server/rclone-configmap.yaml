@@ -1,0 +1,63 @@
+{{- if .Values.server.rclone.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "immich.fullname" . }}-rclone
+  labels:
+    {{- include "immich.serverLabels" . | nindent 4 }}
+data:
+  rclone.conf: |
+    [s3remote]
+    type = s3
+    provider = Other
+    env_auth = true
+    endpoint = {{ .Values.server.rclone.s3.endpoint }}
+    region = {{ .Values.server.rclone.s3.region | default "us-east-1" }}
+    {{- if .Values.server.rclone.s3.forcePathStyle }}
+    force_path_style = true
+    {{- end }}
+
+  sync-loop.sh: |
+    #!/bin/sh
+    set -e
+
+    SYNC_INTERVAL="${SYNC_INTERVAL:-3600}"
+    BUCKET="${RCLONE_S3_BUCKET}"
+    PATH_PREFIX="${RCLONE_S3_PATH_PREFIX}"
+    EXTRA_FLAGS="${RCLONE_EXTRA_FLAGS:-}"
+
+    # Build the remote path
+    if [ -n "$PATH_PREFIX" ]; then
+      REMOTE_PATH="s3remote:${BUCKET}/${PATH_PREFIX}"
+    else
+      REMOTE_PATH="s3remote:${BUCKET}"
+    fi
+
+    echo "Starting rclone sync loop"
+    echo "  Source: /data"
+    echo "  Destination: ${REMOTE_PATH}"
+    echo "  Interval: ${SYNC_INTERVAL}s"
+
+    while true; do
+      echo "$(date '+%Y-%m-%d %H:%M:%S') - Starting sync..."
+
+      # Run rclone sync with delete propagation
+      # --delete-after: delete files on remote after transfer completes
+      # shellcheck disable=SC2086
+      rclone sync /data "${REMOTE_PATH}" \
+        --config /config/rclone.conf \
+        --delete-after \
+        --log-level INFO \
+        ${EXTRA_FLAGS}
+
+      RESULT=$?
+      if [ $RESULT -eq 0 ]; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') - Sync completed successfully"
+      else
+        echo "$(date '+%Y-%m-%d %H:%M:%S') - Sync failed with exit code: $RESULT"
+      fi
+
+      echo "$(date '+%Y-%m-%d %H:%M:%S') - Sleeping for ${SYNC_INTERVAL}s..."
+      sleep "${SYNC_INTERVAL}"
+    done
+{{- end }}
