@@ -140,10 +140,20 @@ DB_HOSTNAME: {{ printf "%s-%s" (include "immich.fullname" .) "database" | b64enc
 {{- end }}
 
 {{/*
+Check if rclone is truly enabled (enabled flag + all required S3 values set).
+Returns "true" or "" (empty string, falsy).
+*/}}
+{{- define "immich.rclone.enabled" -}}
+{{- if and .Values.server.rclone.enabled .Values.server.rclone.s3.endpoint .Values.server.rclone.s3.accessKey .Values.server.rclone.s3.secretKey .Values.server.rclone.s3.bucket -}}
+true
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return contents of the rclone configmap for checksum calculation
 */}}
 {{- define "immich.rcloneConfig" }}
-{{- if .Values.server.rclone.enabled }}
+{{- if (include "immich.rclone.enabled" .) }}
 endpoint: {{ .Values.server.rclone.s3.endpoint }}
 region: {{ .Values.server.rclone.s3.region }}
 bucket: {{ .Values.server.rclone.s3.bucket }}

@@ -1,4 +1,4 @@
-{{- if .Values.server.rclone.enabled }}
+{{- if (include "immich.rclone.enabled" .) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

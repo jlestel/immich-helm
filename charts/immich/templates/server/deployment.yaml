@@ -18,7 +18,7 @@ spec:
         serverConfig/checksum: {{ include "immich.serverConfig" . | sha256sum }}
         {{- end }}
         secretEnv/checksum: {{ include "immich.server.secretEnv" . | sha256sum }}
-        {{- if .Values.server.rclone.enabled }}
+        {{- if (include "immich.rclone.enabled" .) }}
         rcloneConfig/checksum: {{ include "immich.rcloneConfig" . | sha256sum }}
         {{- end }}
         {{- with .Values.podAnnotations }}
@@ -108,7 +108,7 @@ spec:
               {{- toYaml . | nindent 12 }}
             {{- end }}
           {{- end }}
-        {{- if .Values.server.rclone.enabled }}
+        {{- if (include "immich.rclone.enabled" .) }}
         - name: rclone
           image: "{{ .Values.server.rclone.image.repository }}:{{ .Values.server.rclone.image.tag }}"
           imagePullPolicy: {{ .Values.server.rclone.image.pullPolicy }}
@@ -151,7 +151,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         {{- end }}
-      {{- if or .Values.server.configuration .Values.server.volumes .Values.server.persistence.enabled .Values.server.rclone.enabled }}
+      {{- if or .Values.server.configuration .Values.server.volumes .Values.server.persistence.enabled (include "immich.rclone.enabled" .) }}
       volumes:
         {{- if .Values.server.configuration }}
         - name: config
@@ -166,7 +166,7 @@ spec:
         {{- with .Values.server.volumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- if .Values.server.rclone.enabled }}
+        {{- if (include "immich.rclone.enabled" .) }}
         - name: rclone-config
           configMap:
             name: {{ include "immich.fullname" . }}-rclone
