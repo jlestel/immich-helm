@@ -45,7 +45,7 @@ server:
     # This sets the pull policy for images.
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+    tag: "v2.5.6"
 
   # Set environment variables for the server container. See available variables
   # at https://docs.immich.app/install/environment-variables
