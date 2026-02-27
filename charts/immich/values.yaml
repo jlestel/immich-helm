@@ -244,6 +244,12 @@ machineLearning:
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
 
+  # Maximum number of startup probe failures before the container is killed.
+  # Each attempt is 10s apart, so the total startup timeout is:
+  # startupProbeFailureThreshold * 10s
+  # Default: 360 = 1 hour, to allow time for model downloads on first start.
+  startupProbeFailureThreshold: 360
+
   resources:
     # Resource requirements vary with the size of each deployment. For example,
     # a new deployment usually uses around 100Mi of memory, but with around
