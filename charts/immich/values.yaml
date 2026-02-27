@@ -73,7 +73,7 @@ server:
   # See https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#environment-variables
   extraEnvFrom: []
 
-  resources:
+  resources: {}
     # Resource requirements vary with the size of each deployment. For example,
     # a new deployment usually uses around 400Mi of memory, but with around
     # 20,000 photos it uses around 1Gi.
@@ -81,12 +81,12 @@ server:
     # your own needs.
     # See https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     # for documentation on how to set these values
-     limits:
-       cpu: 1000m
-       memory: 2000Mi
-     requests:
-       cpu: 200m
-       memory: 400Mi
+    # limits:
+    #   cpu: 1000m
+    #   memory: 2000Mi
+    # requests:
+    #   cpu: 200m
+    #   memory: 400Mi
 
   # Additional volumes on the output Deployment definition.
   volumes: []
