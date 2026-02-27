@@ -221,7 +221,7 @@ machineLearning:
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
 
-  resources: {}
+  resources:
     # Resource requirements vary with the size of each deployment. For example,
     # a new deployment usually uses around 100Mi of memory, but with around
     # 20,000 photos it uses around 300Mi.
