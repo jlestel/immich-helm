@@ -250,7 +250,7 @@ machineLearning:
   # Default: 360 = 1 hour, to allow time for model downloads on first start.
   startupProbeFailureThreshold: 360
 
-  resources:
+  resources: {}
     # Resource requirements vary with the size of each deployment. For example,
     # a new deployment usually uses around 100Mi of memory, but with around
     # 20,000 photos it uses around 300Mi.
@@ -258,12 +258,12 @@ machineLearning:
     # your own needs.
     # See https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     # for documentation on how to set these values
-    limits:
-      cpu: 1000m
-      memory: 500Mi
-    requests:
-      cpu: 200m
-      memory: 100Mi
+    #limits:
+    #  cpu: 1000m
+    #  memory: 500Mi
+    #requests:
+    #  cpu: 200m
+    #  memory: 100Mi
 
   nodeSelector: {}
 
