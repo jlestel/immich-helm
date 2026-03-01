@@ -72,7 +72,7 @@ spec:
               path: /api/server/ping
               port: http
             initialDelaySeconds: 0
-            periodSeconds: 10
+            periodSeconds: {{ .Values.server.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.server.livenessProbe.timeoutSeconds }}
           readinessProbe:
             failureThreshold: {{ .Values.server.readinessProbe.failureThreshold }}
@@ -80,7 +80,7 @@ spec:
               path: /api/server/ping
               port: http
             initialDelaySeconds: 0
-            periodSeconds: 10
+            periodSeconds: {{ .Values.server.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.server.readinessProbe.timeoutSeconds }}
           startupProbe:
             failureThreshold: {{ .Values.server.startupProbeFailureThreshold }}
