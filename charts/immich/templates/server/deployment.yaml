@@ -67,23 +67,23 @@ spec:
               containerPort: 2283
               protocol: TCP
           livenessProbe:
-            failureThreshold: 3
+            failureThreshold: {{ .Values.server.livenessProbe.failureThreshold }}
             httpGet:
               path: /api/server/ping
               port: http
             initialDelaySeconds: 0
             periodSeconds: 10
-            timeoutSeconds: 1
+            timeoutSeconds: {{ .Values.server.livenessProbe.timeoutSeconds }}
           readinessProbe:
-            failureThreshold: 3
+            failureThreshold: {{ .Values.server.readinessProbe.failureThreshold }}
             httpGet:
               path: /api/server/ping
               port: http
             initialDelaySeconds: 0
             periodSeconds: 10
-            timeoutSeconds: 1
+            timeoutSeconds: {{ .Values.server.readinessProbe.timeoutSeconds }}
           startupProbe:
-            failureThreshold: 30
+            failureThreshold: {{ .Values.server.startupProbeFailureThreshold }}
             httpGet:
               path: /api/server/ping
               port: http

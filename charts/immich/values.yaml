@@ -107,6 +107,28 @@ server:
 
   affinity: {}
 
+  # Liveness probe configuration. The liveness probe restarts the container if
+  # it fails. Under heavy load (e.g. bulk imports), the server may be slow to
+  # respond. Increase timeoutSeconds and/or failureThreshold to avoid
+  # unnecessary restarts.
+  livenessProbe:
+    failureThreshold: 5   # défaut : 3
+    timeoutSeconds: 10    # défaut : 1 — principal coupable
+
+  # Readiness probe configuration. The readiness probe stops routing traffic to
+  # the pod if it fails. Under heavy load (e.g. bulk imports), the server may
+  # be slow to respond. Increase timeoutSeconds and/or failureThreshold to
+  # avoid the pod being incorrectly marked as not ready.
+  readinessProbe:
+    failureThreshold: 5   # défaut : 3
+    timeoutSeconds: 10    # défaut : 1
+
+  # Maximum number of startup probe failures before the container is killed.
+  # Each attempt is 10s apart, so the total startup timeout is:
+  # startupProbeFailureThreshold * 10s
+  # Default: 30 = 5 minutes.
+  startupProbeFailureThreshold: 30
+
   persistence:
     enabled: true
     accessModes:
