@@ -93,6 +93,22 @@ app.kubernetes.io/component: machine-learning
 {{- end }}
 
 {{/*
+Workers labels
+*/}}
+{{- define "immich.workersLabels" -}}
+{{ include "immich.commonLabels" . }}
+{{ include "immich.workersSelectorLabels" . }}
+{{- end }}
+
+{{/*
+Workers selector labels
+*/}}
+{{- define "immich.workersSelectorLabels" -}}
+{{ include "immich.commonSelectorLabels" . }}
+app.kubernetes.io/component: workers
+{{- end }}
+
+{{/*
 Return the correct PVC claimName based on whether the user specified an
 existing claim or not
 */}}

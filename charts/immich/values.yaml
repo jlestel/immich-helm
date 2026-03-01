@@ -254,6 +254,37 @@ server:
       notifications:
         concurrency: 1
 
+# Workers deployment for background job processing. When enabled, the server
+# handles only API requests (IMMICH_WORKERS_INCLUDE=api) and a separate
+# workers pod handles all background jobs (IMMICH_WORKERS_INCLUDE=microservices).
+# This keeps the web UI responsive during heavy imports.
+#
+# Note: workers and server share the same data PVC. If your StorageClass only
+# supports ReadWriteOnce, both pods must run on the same Kubernetes node.
+# Use nodeAffinity or a ReadWriteMany StorageClass for multi-node clusters.
+workers:
+  # Enable a separate workers deployment. When false (default), the server
+  # handles both API requests and background jobs.
+  enabled: false
+  replicaCount: 1
+  deploymentStrategy: RollingUpdate
+
+  resources: {}
+  # limits:
+  #   cpu: 2000m
+  #   memory: 2Gi
+  # requests:
+  #   cpu: 500m
+  #   memory: 512Mi
+
+  extraEnv: []
+  extraEnvFrom: []
+  volumes: []
+  volumeMounts: []
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 # Machine Learning containers handle things like facial recognition.
 # See https://docs.immich.app/developer/architecture#machine-learning
 machineLearning:

@@ -46,8 +46,12 @@ spec:
           {{- end }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
-          {{- if or .Values.server.configuration .Values.server.extraEnv }}
+          {{- if or .Values.workers.enabled .Values.server.configuration .Values.server.extraEnv }}
           env:
+            {{- if .Values.workers.enabled }}
+            - name: IMMICH_WORKERS_INCLUDE
+              value: api
+            {{- end }}
             {{- if .Values.server.configuration }}
             - name: IMMICH_CONFIG_FILE
               value: /config/immich-config.yaml
