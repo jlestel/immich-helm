@@ -36,6 +36,15 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.server.uploadPersistence.enabled }}
+      initContainers:
+        - name: init-upload-dir
+          image: busybox:1.28
+          command: ["sh", "-c", "touch /data/upload/.immich"]
+          volumeMounts:
+            - name: upload
+              mountPath: /data/upload
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           {{- with .Values.securityContext }}

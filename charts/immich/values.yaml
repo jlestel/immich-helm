@@ -279,7 +279,7 @@ server:
 workers:
   # Enable a separate workers deployment. When false (default), the server
   # handles both API requests and background jobs.
-  enabled: true
+  enabled: false
   replicaCount: 1
   deploymentStrategy: RollingUpdate
 
