@@ -121,6 +121,17 @@ existing claim or not
 {{- end }}
 
 {{/*
+Return the correct PVC claimName for the upload volume
+*/}}
+{{- define "immich.server.uploadPersistence.claimName" }}
+{{- if .Values.server.uploadPersistence.existingClaim }}
+{{- .Values.server.uploadPersistence.existingClaim }}
+{{- else }}
+{{- include "immich.fullname" . }}-upload
+{{- end }}
+{{- end }}
+
+{{/*
 Return the correct PVC claimName based on whether the user specified an
 existing claim or not
 */}}

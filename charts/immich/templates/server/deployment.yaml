@@ -98,7 +98,7 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if or .Values.server.configuration .Values.server.volumes .Values.server.persistence.enabled }}
+          {{- if or .Values.server.configuration .Values.server.volumes .Values.server.persistence.enabled .Values.server.uploadPersistence.enabled }}
           volumeMounts:
             {{- if .Values.server.configuration }}
             - name: config
@@ -107,6 +107,10 @@ spec:
             {{- if .Values.server.persistence.enabled }}
             - name: data
               mountPath: /data
+            {{- end }}
+            {{- if .Values.server.uploadPersistence.enabled }}
+            - name: upload
+              mountPath: /data/upload
             {{- end }}
             {{- with .Values.server.volumeMounts }}
               {{- toYaml . | nindent 12 }}
@@ -155,7 +159,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         {{- end }}
-      {{- if or .Values.server.configuration .Values.server.volumes .Values.server.persistence.enabled (include "immich.rclone.enabled" .) }}
+      {{- if or .Values.server.configuration .Values.server.volumes .Values.server.persistence.enabled .Values.server.uploadPersistence.enabled (include "immich.rclone.enabled" .) }}
       volumes:
         {{- if .Values.server.configuration }}
         - name: config
@@ -166,6 +170,11 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: {{ include "immich.server.persistence.claimName" . }}
+        {{- end }}
+        {{- if .Values.server.uploadPersistence.enabled }}
+        - name: upload
+          persistentVolumeClaim:
+            claimName: {{ include "immich.server.uploadPersistence.claimName" . }}
         {{- end }}
         {{- with .Values.server.volumes }}
           {{- toYaml . | nindent 8 }}

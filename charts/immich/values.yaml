@@ -151,6 +151,18 @@ server:
     # new volume, the PVC will attach to the existing one.
     volumeName: ""
 
+  # Separate PVC for the upload staging directory (/data/upload).
+  # Use a fast storage class (e.g. local-path) here to avoid bottlenecks
+  # when the main persistence volume uses slow object storage (e.g. csi-s3).
+  # Both server and workers pods will mount this volume at /data/upload.
+  uploadPersistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 2Gi
+    storageClassName: ""
+    existingClaim: ""
+
   # Rclone S3 sync sidecar configuration
   # Continuously syncs /data to an S3-compatible storage backend
   rclone:
