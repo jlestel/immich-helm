@@ -34,7 +34,7 @@ priorityClassName: ""
 # jobs. See https://docs.immich.app/administration/jobs-workers
 server:
   # Deployment replicaCount for server containers
-  replicaCount: 1
+  replicaCount: 4
   # deploymentStrategy for server containers. Either RollingUpdate or
   # Recreate. See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
   # for details.
